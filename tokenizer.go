@@ -21,7 +21,7 @@ type Tokenizer struct {
 
 // New creates a new Tokenizer. This should be initialized on server start up. Running this for every request could cause memory failures
 func New() (*Tokenizer, error) {
-	fileContent, err := os.ReadFile("claude.json")
+	fileContent, err := os.ReadFile("./claude.json")
 	if err != nil {
 		return nil, err
 	}
