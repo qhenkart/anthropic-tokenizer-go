@@ -5,11 +5,7 @@ This package provides a convenient way to check how many tokens a given piece of
 ## Installation
 
 ```sh
-# Use as a module
 go get github.com/qhenkart/anthropic-tokenizer-go
-
-# Use as a command line program
-go install  github.com/pandodao/tokenizer-go/cmd/tokenizer@latest
 ```
 
 ## Usage
