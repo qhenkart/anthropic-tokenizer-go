@@ -1,6 +1,6 @@
 module github.com/qhenkart/anthropic-tokenizer-go
 
-go 1.21.1
+go 1.21
 
 require (
 	github.com/pkoukk/tiktoken-go v0.1.6
