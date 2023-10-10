@@ -1,0 +1,12 @@
+{
+  "bpe_ranks": "",
+  "pat_str": "'s|'t|'re|'ve|'m|'ll|'d| ?\\p{L}+| ?\\p{N}+| ?[^\\s\\p{L}\\p{N}]+|\\s+(?!\\S)|\\s+",
+  "special_tokens": {
+    "\u003cEOT\u003e": 0,
+    "\u003cMETA\u003e": 1,
+    "\u003cMETA_END\u003e": 3,
+    "\u003cMETA_START\u003e": 2,
+    "\u003cSOS\u003e": 4
+  },
+  "explicit_n_vocab": 64739
+}
