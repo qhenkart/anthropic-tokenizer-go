@@ -34,7 +34,7 @@ func main() {
 	}
 
 	// Process the string
-	bytePairs := strings.Split(conf.BPERanks, " ")
+	bytePairs := strings.Split(conf.BPERanks[4:], " ")
 
 	file, err := os.Create("bpe_ranks.txt")
 	if err != nil {

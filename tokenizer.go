@@ -2,7 +2,6 @@ package tokenizer
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 
 	"github.com/pkoukk/tiktoken-go"
@@ -15,28 +14,31 @@ type config struct {
 	ExplicitNVocab int            `json:"explicit_n_vocab"`
 }
 
-func New() *tiktoken.Tiktoken {
+// Tokenizer wraps the underlying tiktoken library
+type Tokenizer struct {
+	*tiktoken.Tiktoken
+}
+
+// New creates a new Tokenizer. This should be initialized on server start up. Running this for every request could cause memory failures
+func New() (*Tokenizer, error) {
 	fileContent, err := os.ReadFile("claude.json")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	var conf config
-	err = json.Unmarshal(fileContent, &conf)
-	if err != nil {
-		panic(err)
+	if err = json.Unmarshal(fileContent, &conf); err != nil {
+		return nil, err
 	}
-
 	encoder := tiktoken.NewDefaultBpeLoader()
 	ranks, err := encoder.LoadTiktokenBpe("./bpe_ranks.txt")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	bpe, err := tiktoken.NewCoreBPE(ranks, conf.SpecialTokens, conf.PatternStr)
 	if err != nil {
-		err = fmt.Errorf("getEncoding: %v", err)
-		panic(err)
+		return nil, err
 	}
 
 	enc := &tiktoken.Encoding{
@@ -54,12 +56,11 @@ func New() *tiktoken.Tiktoken {
 
 	tt := tiktoken.NewTiktoken(bpe, enc, specialTokensSet)
 
-	return tt
+	return &Tokenizer{tt}, nil
 }
 
-func countTokens(text string) int {
-	tt := New()
-
+// Tokens returns the amount of tokens in the input
+func (t *Tokenizer) Tokens(text string) int {
 	normal := norm.NFKC.String(text)
-	return len(tt.Encode(normal, []string{"all"}, nil))
+	return len(t.Encode(normal, []string{"all"}, nil))
 }
