@@ -1,0 +1,19 @@
+version: 2.1
+
+jobs:
+  run-tests:
+    docker:
+      - image: cimg/go:1.21
+    steps:
+      - checkout
+      - run:
+          name: "Fetch Dependencies"
+          command: go mod download
+      - run:
+          name: "Run Go Tests"
+          command: go test ./...
+
+workflows:
+  test-workflow:
+    jobs:
+      - run-tests

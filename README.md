@@ -1,3 +1,5 @@
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/qhenkart/anthropic-tokenizer-go/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/qhenkart/anthropic-tokenizer-go/tree/main)
+
 # Anthropic Golang Tokenizer
 
 This package provides a convenient way to check how many tokens a given piece of text will be.
