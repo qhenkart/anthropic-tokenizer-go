@@ -47,7 +47,7 @@ func New() (*Tokenizer, error) {
 	}
 
 	enc := &tiktoken.Encoding{
-		Name:           "CLAUDE-2",
+		Name:           "CLAUDE",
 		PatStr:         conf.PatternStr,
 		MergeableRanks: ranks,
 		SpecialTokens:  conf.SpecialTokens,
