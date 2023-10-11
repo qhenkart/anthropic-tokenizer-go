@@ -1,8 +1,12 @@
 package tokenizer
 
 import (
+	"encoding/base64"
 	"encoding/json"
-	"os"
+	"strconv"
+	"strings"
+
+	_ "embed"
 
 	"github.com/pkoukk/tiktoken-go"
 	"golang.org/x/text/unicode/norm"
@@ -19,19 +23,20 @@ type Tokenizer struct {
 	*tiktoken.Tiktoken
 }
 
+//go:embed claude.json
+var claudeJSON []byte
+
+//go:embed bpe_ranks.txt
+var bpeRanks string
+
 // New creates a new Tokenizer. This should be initialized on server start up. Running this for every request could cause memory failures
 func New() (*Tokenizer, error) {
-	fileContent, err := os.ReadFile("./claude.json")
-	if err != nil {
+	var conf config
+	if err := json.Unmarshal(claudeJSON, &conf); err != nil {
 		return nil, err
 	}
 
-	var conf config
-	if err = json.Unmarshal(fileContent, &conf); err != nil {
-		return nil, err
-	}
-	encoder := tiktoken.NewDefaultBpeLoader()
-	ranks, err := encoder.LoadTiktokenBpe("./bpe_ranks.txt")
+	ranks, err := loadBPE(bpeRanks)
 	if err != nil {
 		return nil, err
 	}
@@ -63,4 +68,24 @@ func New() (*Tokenizer, error) {
 func (t *Tokenizer) Tokens(text string) int {
 	normal := norm.NFKC.String(text)
 	return len(t.Encode(normal, []string{"all"}, nil))
+}
+
+func loadBPE(contents string) (map[string]int, error) {
+	bpeRanks := make(map[string]int)
+	for _, line := range strings.Split(contents, "\n") {
+		if line == "" {
+			continue
+		}
+		parts := strings.Split(line, " ")
+		token, err := base64.StdEncoding.DecodeString(parts[0])
+		if err != nil {
+			return nil, err
+		}
+		rank, err := strconv.Atoi(parts[1])
+		if err != nil {
+			return nil, err
+		}
+		bpeRanks[string(token)] = rank
+	}
+	return bpeRanks, nil
 }
